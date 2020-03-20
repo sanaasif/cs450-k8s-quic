@@ -1,0 +1,15 @@
+wget https://github.com/protocolbuffers/protobuf/releases/download/v3.11.4/protoc-3.11.4-linux-x86_64.zip
+unzip protoc-3.11.4-linux-x86_64.zip -d protoc
+go get -u google.golang.org/grpc
+export PATH="/sbin:/bin:/usr/bin:/usr/local/bin:/usr/lib/go-1.13/bin:/home/rohit/Downloads/protoc/bin:/home/rohit/go/bin"
+go get -u github.com/golang/protobuf/protoc-gen-go
+
+cd into folder with the proto file
+protoc --go_out=plugins=grpc:. *.proto
+
+
+import like
+"grpc-quic/proto/hello2"
+
+where hello2 is package name defined in proto file
+It was also the folder name in proto which had proto and pb.go files
