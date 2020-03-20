@@ -1,0 +1,2 @@
+Had to disable swap on all
+Had to manually run init command on master since it took too long to execute
