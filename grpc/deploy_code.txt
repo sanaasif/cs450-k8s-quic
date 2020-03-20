@@ -1,0 +1,15 @@
+kubectl cp ~/Downloads/grpc-quic ubuntu-server-shell:tmp
+kubectl cp ~/Downloads/grpc-quic ubuntu-client-shell:tmp
+
+
+kubectl cp ~/nginx-tls/localhost.key ubuntu-server-shell:tmp/server.key
+kubectl cp ~/nginx-tls/localhost.pem ubuntu-server-shell:tmp/server.pem
+kubectl cp ~/nginx-tls/new_gen_cert/out/2048-sha256-root.pem ubuntu-client-shell:tmp/ca.pem
+
+
+On the shell in the pod:
+
+apt-get install software-properties-common
+add-apt-repository ppa:longsleep/golang-backports
+apt install -y golang-1.13-go
+export PATH="$PATH:/usr/lib/go-1.13/bin"
