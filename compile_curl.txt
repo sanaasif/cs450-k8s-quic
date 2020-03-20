@@ -1,0 +1,23 @@
+apt update
+apt-get install software-properties-common
+add-apt-repository ppa:longsleep/golang-backports
+apt install -y build-essential cmake git golang-go libtool cargo autoconf
+git clone --recursive https://github.com/cloudflare/quiche
+cd quiche/deps/boringssl
+mkdir build && cd build
+cmake -DCMAKE_POSITION_INDEPENDENT_CODE=on ..
+make -j8
+cd ..
+mkdir -p .openssl/lib
+cp build/crypto/libcrypto.a build/ssl/libssl.a .openssl/lib
+ln -s $PWD/include .openssl
+cd ../..
+QUICHE_BSSL_PATH=$PWD/deps/boringssl cargo build --release --features pkg-config-meta
+cd ..
+git clone https://github.com/curl/curl
+cd curl/
+./buildconf 
+./configure LDFLAGS="-Wl,-rpath,$PWD/../quiche/target/release" --with-ssl=$PWD/../quiche/deps/boringssl/.openssl --with-quiche=$PWD/../quiche/target/release --enable-alt-svc
+make -j8
+make install
+cp lib/.libs/libcurl.so.4 /usr/lib/x86_64-linux-gnu/libcurl.so.4
