@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: nginx-http3
+spec:
+  nodeName: k8snode1-standard-pc-i440fx-piix-1996 
+  volumes:
+  - name: secret-key-volume
+    secret:
+      secretName: nginx-cert-key
+  - name: secret-pem-volume
+    secret:
+      secretName: nginx-cert-pem
+  - name: configmap-volume
+    configMap:
+      name: nginxconfigmap
+  - name: h3configmap-volume
+    configMap:
+      name: h3nginxconfigmap
+  containers:
+    - name: "nginx-h3"
+      image: "ranadeeppolavarapu/nginx-http3:latest"
+      ports:
+      - name: "http"
+        containerPort: 80
+      - name: "https"
+        containerPort: 443
+      - name: "quic"
+        containerPort: 443
+        protocol: UDP
+
+      volumeMounts:
+      - mountPath: /etc/ssl/localhost.pem
+        name: secret-pem-volume
+        subPath: localhost.pem
+      - mountPath: /etc/ssl/private/localhost.key
+        name: secret-key-volume
+        subPath: localhost.key
+      - mountPath: /etc/nginx/conf.d/h3.nginx.conf
+        name: h3configmap-volume
+        subPath: h3.nginx.conf
+      - mountPath: /etc/nginx/nginx.conf
+        name: configmap-volume
+        subPath: nginx.conf
+      imagePullPolicy: IfNotPresent 
